@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}connectIPS — Sign in{% endblock %}
+{% block topbar_extra %}
+<a class="back" href="{% url 'payments:payments-home' %}">&larr; Cancel &amp; go home</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:440px; margin:0 auto;">
+    <div class="card-title" style="display:flex; align-items:center; gap:.6rem; border-bottom:none;">
+        <img src="https://nchl.com.np/wp-content/uploads/2023/11/NCHL-Logo.png" alt="NCHL" style="height:34px; width:auto;">
+        <span style="font-weight:700; letter-spacing:.02em;">connect<span style="color:var(--connectips);">IPS</span></span>
+        <span class="badge badge-neutral" style="margin-left:auto;">Demo</span>
+    </div>
+
+    <p style="color:var(--muted); font-size:.8rem; margin:.2rem 0 1rem; text-align:center;">
+        A Nepal Clearing House Ltd. service &mdash; mock sign in
+    </p>
+
+    <div class="fp-notice" style="text-align:left; margin-bottom:1rem;">
+        <div class="fp-notice-head">
+            <span class="fp-notice-tag">SIMULATED</span>
+            <span class="fp-notice-title">Mock ConnectIPS login</span>
+        </div>
+        <ul class="fp-notice-list">
+            <li>Stand-in for NCHL's hosted login. A real UAT session needs a signed merchant account, so this uses demo credentials.</li>
+        </ul>
+    </div>
+
+    <div style="border:1px solid var(--border); border-radius:var(--radius); padding:.8rem 1rem; margin-bottom:1rem; font-size:.85rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:.35rem;"><span style="color:var(--muted);">Merchant</span><span style="font-weight:600;">{{ merchant }}</span></div>
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">Amount</span><span style="font-weight:600;">NPR {{ amount }}</span></div>
+    </div>
+
+    {% if error %}
+    <div style="background:var(--warning-soft); border:1px solid var(--warning); color:var(--warning); border-radius:var(--radius); padding:.6rem .8rem; font-size:.82rem; margin-bottom:1rem;">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="{% url 'payments:payments-connectips-payment' %}">
+        <input type="hidden" name="ci_step" value="login">
+        <label class="form-label" for="ci-user">connectIPS Username</label>
+        <input class="form-control" type="text" id="ci-user" name="ci_username" value="{{ demo_username }}" autocomplete="off">
+        <label class="form-label" for="ci-pass" style="margin-top:.8rem;">Password</label>
+        <input class="form-control" type="password" id="ci-pass" name="ci_password" value="{{ demo_password }}" autocomplete="off">
+        <label class="form-label" for="ci-captcha" style="margin-top:.8rem;">Captcha</label>
+        <div style="display:flex; gap:.6rem; align-items:center;">
+            <input class="form-control" type="text" id="ci-captcha" name="ci_captcha" value="{{ demo_captcha }}" autocomplete="off" style="flex:1;">
+            <span style="font-family:var(--mono,monospace); font-weight:700; letter-spacing:.25em; background:var(--surface-2); padding:.5rem .7rem; border-radius:var(--radius); border:1px solid var(--border); user-select:none;">{{ demo_captcha }}</span>
+        </div>
+        <button class="btn btn-connectips" type="submit" style="width:100%; margin-top:1.1rem;">Sign in</button>
+    </form>
+
+    <p style="color:var(--muted); font-size:.78rem; margin-top:.9rem;">
+        Demo sign-in is pre-filled &mdash; just click <strong>Sign in</strong>.
+    </p>
+</div>
+{% endblock %}
