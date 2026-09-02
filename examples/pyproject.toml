@@ -1,0 +1,16 @@
+[project]
+name = "django-nepali-payment-examples"
+version = "1.0.0"
+description = "Example Django project for django-nepali-payment"
+requires-python = ">=3.11"
+dependencies = [
+    "django-nepali-payment>=1.0.0",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = []
+
+[tool.uv.sources]
+django-nepali-payment = { path = ".." }
