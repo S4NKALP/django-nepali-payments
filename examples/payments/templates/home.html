@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+{% block title %}Payment Gateways — Demo{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Choose a payment gateway</h1>
+    <p>Initiate a test payment, then complete it on the provider's hosted page.</p>
+</div>
+
+<!-- Test credentials -->
+<div class="card" style="margin-bottom:1.5rem;">
+    <div class="card-title">Sandbox test credentials</div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Payment method</th><th>Test ID / Username</th><th>Password / MPIN</th><th>OTP / Token</th><th>Secret (demo)</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="vertical-align:middle;">
+                        <img src="https://cdn.esewa.com.np/ui/images/esewa_og.png" alt="eSewa" style="height:26px; width:auto;">
+                    </td>
+                    <td><code>9806800001/2/3/4/5</code></td>
+                    <td><code>Nepal@123</code></td>
+                    <td><code>123456</code></td>
+                    <td><code>8gBm/:&amp;EnhH.1/q</code>, code <code>EPAYTEST</code></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle;">
+                        <img src="https://khalti-static.s3.ap-south-1.amazonaws.com/cloudfront-cdn/jamara/web19/images/khalti-logo.svg" alt="Khalti" style="height:26px; width:auto;">
+                    </td>
+                    <td><code>9800000001/2/3/4/5</code></td>
+                    <td><code>1111</code></td>
+                    <td><code>987654</code></td>
+                    <td><code>live_secret_key_68791341fdd94846a146f0457ff7b455</code></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle;">
+                        <img src="https://fonepay.com/images/logo.png" alt="Fonepay" style="height:26px; width:auto;">
+                    </td>
+                    <td><code>Not available</code></td>
+                    <td><code>Not available</code></td>
+                    <td><code>Not available</code></td>
+                    <td>merchant <code>NBQM</code>, secret key <code>a7e3512f5032480a83137793cb2021dc</code></td>
+                </tr>
+                <tr>
+                    <td style="vertical-align:middle;">
+                        <img src="https://play-lh.googleusercontent.com/FjpvhuFfcWokUHoKiBup3hDW84tJJGuywHby8ay0UJ2KX6WodOMAsk-0d32wHIwfACpF_0Fzx8gbOaVZjT_BRrY=s128" alt="ConnectIPS" style="height:26px; width:auto;">
+                    </td>
+                    <td><code>Not available</code></td>
+                    <td><code>Not available</code></td>
+                    <td><code>Not available</code></td>
+                    <td>Requires merchant onboarding with <a href="https://nchl.com.np" target="_blank" rel="noopener">Nepal Clearing House (NCHL)</a> — you receive Merchant ID, App ID, and <code>.pfx</code> certificate.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="col">
+        <!-- Gateway list -->
+        <div class="card">
+            <div class="card-title">Payment methods</div>
+            <div class="gateway-list">
+                <div class="gateway-item">
+                    <div class="g-info">
+                        <span class="g-logo"><img src="https://khalti-static.s3.ap-south-1.amazonaws.com/cloudfront-cdn/jamara/web19/images/khalti-logo.svg" alt="Khalti"></span>
+                        <div>
+                            <div class="g-name"><span class="swatch" style="background:var(--khalti)"></span>Khalti</div>
+                            <div class="g-sub">Redirect to Khalti's checkout</div>
+                        </div>
+                    </div>
+                    <form method="post" action="{% url 'payments:payments-create' 'khalti' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-khalti btn-sm" type="submit">Pay</button>
+                    </form>
+                </div>
+
+                <div class="gateway-item">
+                    <div class="g-info">
+                        <span class="g-logo"><img src="https://cdn.esewa.com.np/ui/images/esewa_og.png" alt="eSewa"></span>
+                        <div>
+                            <div class="g-name"><span class="swatch" style="background:var(--esewa)"></span>eSewa</div>
+                            <div class="g-sub">Redirect to eSewa's checkout</div>
+                        </div>
+                    </div>
+                    <form method="post" action="{% url 'payments:payments-create' 'esewa' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-esewa btn-sm" type="submit">Pay</button>
+                    </form>
+                </div>
+
+                <div class="gateway-item">
+                    <div class="g-info">
+                        <span class="g-logo"><img src="https://play-lh.googleusercontent.com/FjpvhuFfcWokUHoKiBup3hDW84tJJGuywHby8ay0UJ2KX6WodOMAsk-0d32wHIwfACpF_0Fzx8gbOaVZjT_BRrY=s128" alt="ConnectIPS"></span>
+                        <div>
+                            <div class="g-name"><span class="swatch" style="background:var(--connectips)"></span>ConnectIPS</div>
+                            <div class="g-sub">Form-POST to ConnectIPS login</div>
+                        </div>
+                    </div>
+                    <form method="post" action="{% url 'payments:payments-create' 'connectips' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-connectips btn-sm" type="submit">Pay</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <!-- Fonepay QR -->
+        <div class="card">
+            <div class="card-title">
+                <span style="display:inline-flex; align-items:center; gap:.5rem;">
+                    <img src="https://fonepay.com/images/logo.png" alt="Fonepay QR" style="height:28px; width:auto;">
+                </span>
+            </div>
+
+            <div class="fp-notice">
+                <div class="fp-notice-head">
+                    <span class="fp-notice-tag">NOTICE</span>
+                    <span class="fp-notice-title">Fonepay QR uses real transactions in production</span>
+                </div>
+                <ul class="fp-notice-list">
+                    <li>No test credentials available &mdash; test at your own risk</li>
+                    <li>You can use amounts in paisa (e.g., 0.001)</li>
+                    <li>Payments will be processed through real Fonepay gateway</li>
+                    <li>Fonepay's test environment is temporarily unreachable, so any QR shown here is a <strong>simulated</strong> demo stand-in.</li>
+                </ul>
+            </div>
+
+            <div style="display:flex; gap:.75rem; margin-bottom:1.1rem;">
+                <div style="flex:1;">
+                    <label class="form-label" for="fp-amount">Amount (NPR)</label>
+                    <input type="number" min="0.01" step="0.01" class="form-control" id="fp-amount" value="0.001">
+                </div>
+                <div style="flex:1;">
+                    <label class="form-label" for="fp-remarks1">Remarks</label>
+                    <input type="text" maxlength="25" class="form-control" id="fp-remarks1" value="Test Order">
+                </div>
+            </div>
+            <div style="display:flex; gap:.5rem;">
+                <button class="btn btn-primary" id="fp-generate">Generate QR</button>
+                <button class="btn btn-ghost" id="fp-static" title="Fetch the fixed merchant QR">Static QR</button>
+            </div>
+
+            <hr class="ticket-divider">
+
+            <div id="fp-qr-empty" class="qr-box" style="display:none;">
+                <div class="qr-placeholder">
+                    <div class="glyph">&#9635;</div>
+                    <p>Click "Generate QR" or "Static QR" to see it here.</p>
+                </div>
+            </div>
+
+            <div id="fp-qr-active" style="display:none;">
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+                    <div>
+                        <div class="qr-kind" id="fp-qr-kind"></div>
+                        <div class="qr-box">
+                            <div id="fp-qr-dynamic" style="display:none;">
+                                <img id="fp-qr-image" alt="Fonepay QR">
+                                <div style="margin-top:.6rem;"><span class="badge badge-success">Scan to pay</span></div>
+                            </div>
+                            <div id="fp-qr-static" style="display:none;">
+                                <img id="fp-static-qr-image" alt="Fonepay static QR">
+                                <div style="font-size:.78rem; color:var(--muted); margin-top:.6rem;">Customer enters the amount when scanning.</div>
+                            </div>
+                        </div>
+                        <div id="fp-simulated" class="fp-simulated" style="display:none;" role="note">
+                            <strong>Simulated</strong> &mdash; the Fonepay test environment is temporarily unreachable, so this QR is a demo stand-in (not a real transaction).
+                        </div>
+                    </div>
+                    <div>
+                        <div style="margin-bottom:.6rem; display:flex; align-items:center; justify-content:space-between;">
+                            <span style="font-size:.78rem; color:var(--muted); font-weight:500;">Status</span>
+                            <span class="badge badge-neutral" id="fp-status">Ready</span>
+                        </div>
+                        <div class="events-log" id="fp-events">
+                            <p>Events appear here as you generate a QR.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% comment %}
+<!-- Orders -->
+<div class="card" style="margin-top:1.5rem;">
+    <div class="card-title">Recent orders</div>
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr><th>Order</th><th>Gateway</th><th>Amount</th><th>Status</th><th>Provider ref</th><th></th></tr>
+            </thead>
+            <tbody>
+                {% for o in orders %}
+                <tr>
+                    <td><code>{{ o.order_id }}</code></td>
+                    <td>{{ o.gateway|capfirst }}</td>
+                    <td class="amount">NPR {{ o.amount }}</td>
+                    <td><span class="badge badge-{{ o.status }}">{{ o.status }}</span></td>
+                    <td><code>{{ o.provider_ref|truncatechars:20 }}</code></td>
+                    <td>
+                        {% if o.gateway != 'fonepay' %}
+                        <button class="btn btn-ghost btn-sm verify-btn" type="button" data-url="{% url 'payments:payments-verify' o.id %}" data-gateway="{{ o.gateway }}">Verify</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr class="empty-row"><td colspan="6">No orders yet — pay with a gateway above to see it show up here.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endcomment %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function () {
+    var el = function (id) { return document.getElementById(id); };
+    var emptyState = el('fp-qr-empty');
+    var activeState = el('fp-qr-active');
+    var statusEl = el('fp-status');
+    var eventsEl = el('fp-events');
+    var kindEl = el('fp-qr-kind');
+    var qrImg = el('fp-qr-image');
+    var qrDynamic = el('fp-qr-dynamic');
+    var qrStatic = el('fp-qr-static');
+    var simEl = el('fp-simulated');
+
+    function setSimulated(on) {
+        simEl.style.display = on ? 'block' : 'none';
+    }
+
+    function setStatus(text, cls) {
+        statusEl.className = 'badge ' + cls;
+        statusEl.textContent = text;
+    }
+    function addEvent(msg) {
+        var t = new Date().toLocaleTimeString();
+        var d = document.createElement('p');
+        d.textContent = '[' + t + '] ' + msg;
+        eventsEl.prepend(d);
+    }
+    function showQr(target, kindLabel) {
+        emptyState.style.display = 'none';
+        activeState.style.display = 'block';
+        qrDynamic.style.display = 'none';
+        qrStatic.style.display = 'none';
+        target.style.display = 'block';
+        target.classList.remove('qr-reveal');
+        void target.offsetWidth;
+        target.classList.add('qr-reveal');
+        kindEl.textContent = kindLabel;
+    }
+    function renderQr(url) {
+        qrImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(url);
+        showQr(qrDynamic, 'Dynamic QR — this amount only');
+    }
+    function cookieValue(name) {
+        var m = document.cookie.match(new RegExp('(?:^|; )' + name.replace(/([.$?*|{}()\[\]\\\/+^])/g, '\\$1') + '=([^;]*)'));
+        return m ? decodeURIComponent(m[1]) : null;
+    }
+
+    el('fp-generate').addEventListener('click', function () {
+        var amount = el('fp-amount').value.trim();
+        var remarks1 = el('fp-remarks1').value.trim();
+        if (!amount || parseFloat(amount) <= 0) {
+            window.showToast('warning', 'Invalid amount', 'Enter a positive amount.');
+            return;
+        }
+        setStatus('Generating...', 'badge-warning');
+        eventsEl.innerHTML = '';
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "payments:payments-create" "fonepay" %}');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRFToken', cookieValue('csrftoken'));
+        xhr.onload = function () {
+            if (xhr.status !== 200) {
+                setStatus('Failed', 'badge-danger');
+                addEvent('Server error');
+                return;
+            }
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if (data.qr_message) {
+                    renderQr(data.qr_message);
+                    setSimulated(data.simulated);
+                    setStatus(data.simulated ? 'Ready (simulated)' : 'Ready', data.simulated ? 'badge-warning' : 'badge-success');
+                    addEvent('QR generated for NPR ' + amount);
+                    window.showToast('success', 'QR generated', data.simulated ? 'Simulated QR (test environment unreachable).' : 'Scan to complete payment.');
+                } else {
+                    setStatus('Failed', 'badge-danger');
+                    addEvent('Error: ' + (data.error || 'Unknown'));
+                    window.showToast('error', 'Generation failed', (data.error || 'Unknown'));
+                }
+            } catch (e) {
+                setStatus('Error', 'badge-danger');
+                window.showToast('error', 'Unexpected response', e.message);
+            }
+        };
+        xhr.onerror = function () {
+            setStatus('Network error', 'badge-danger');
+            window.showToast('error', 'Network error', 'Could not reach the server.');
+        };
+        xhr.send(JSON.stringify({ amount: amount, remarks1: remarks1 }));
+    });
+
+    el('fp-static').addEventListener('click', function () {
+        var statImg = el('fp-static-qr-image');
+        setStatus('Fetching...', 'badge-warning');
+        window.showToast('info', 'Fetching static QR', 'Requesting Fonepay merchant QR.');
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url "payments:payments-static-qr" %}');
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.setRequestHeader('X-CSRFToken', cookieValue('csrftoken'));
+        xhr.onload = function () {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                if (xhr.status === 200 && data.qr_message) {
+                    statImg.src = 'https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=' + encodeURIComponent(data.qr_message);
+                    showQr(qrStatic, 'Static QR — reusable merchant code');
+                    setSimulated(data.simulated);
+                    setStatus(data.simulated ? 'Ready (simulated)' : 'Ready', data.simulated ? 'badge-warning' : 'badge-success');
+                    addEvent(data.simulated ? 'Static QR fetched (simulated)' : 'Static merchant QR fetched');
+                    window.showToast('success', 'Static QR ready', data.simulated ? 'Simulated static QR (test environment unreachable).' : 'Merchant QR fetched and rendered.');
+                } else {
+                    setStatus('Failed', 'badge-danger');
+                    addEvent('Static QR error: ' + ((data && data.error) || 'Unknown'));
+                    window.showToast('error', 'Static QR failed', (data && data.error) || 'Unknown error');
+                }
+            } catch (e) {
+                setStatus('Error', 'badge-danger');
+                window.showToast('error', 'Unexpected response', e.message);
+            }
+        };
+        xhr.onerror = function () {
+            setStatus('Network error', 'badge-danger');
+            window.showToast('error', 'Network error', 'Could not reach the server.');
+        };
+        xhr.send();
+    });
+})();
+</script>
+{% endblock %}
