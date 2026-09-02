@@ -1,0 +1,30 @@
+name: Live API smoke tests
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 6 * * 1" # weekly, Monday 06:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  live:
+    name: Live sandbox smoke tests
+    runs-on: ubuntu-latest
+    env:
+      NEPALI_PAYMENT_ESEWA_SECRET: ${{ secrets.NEPALI_PAYMENT_ESEWA_SECRET }}
+      NEPALI_PAYMENT_KHALTI_SECRET: ${{ secrets.NEPALI_PAYMENT_KHALTI_SECRET }}
+      NEPALI_PAYMENT_FONEPAY_SECRET: ${{ secrets.NEPALI_PAYMENT_FONEPAY_SECRET }}
+      NEPALI_PAYMENT_FONEPAY_MERCHANT: ${{ secrets.NEPALI_PAYMENT_FONEPAY_MERCHANT }}
+      NEPALI_PAYMENT_FONEPAY_USERNAME: ${{ secrets.NEPALI_PAYMENT_FONEPAY_USERNAME }}
+      NEPALI_PAYMENT_FONEPAY_PASSWORD: ${{ secrets.NEPALI_PAYMENT_FONEPAY_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - name: Install dependencies
+        run: uv sync --extra dev
+      - name: Run live sandbox smoke tests
+        run: uv run pytest tests/test_live_api.py -m live -v
