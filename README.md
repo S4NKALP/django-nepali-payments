@@ -34,7 +34,8 @@ async loops, no daemons, and runs on shared hosting.
 
 ```bash
 pip install django-nepali-payment
-# or: uv add django-nepali-payment
+# or with uv
+uv add django-nepali-payment
 ```
 
 **Requirements:** Python 3.11+, Django 4.2+, `requests`, `cryptography`
