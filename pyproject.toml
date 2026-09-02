@@ -1,0 +1,66 @@
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-nepali-payment"
+version = "1.0.0"
+description = "Nepali payment gateway integration for Django (Khalti, eSewa, Fonepay, ConnectIPS)"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Sankalp Tharu", email = "contact@sankalptharu.com.np" },
+]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+dependencies = [
+    "Django>=4.2",
+    "requests>=2.31",
+    "cryptography>=41.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/sankalp-tharu/django-nepali-payments"
+Repository = "https://github.com/sankalp-tharu/django-nepali-payments"
+Issues = "https://github.com/sankalp-tharu/django-nepali-payments/issues"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-django>=4.8",
+    "pytest-cov>=5.0",
+    "ruff>=0.5",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["nepali_payment*"]
+exclude = ["tests*", "examples*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "live: real network calls to provider sandboxes; skipped without credentials",
+]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint.per-file-ignores]
+"**/migrations/*.py" = ["RUF012", "E501"]
