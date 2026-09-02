@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Redirecting to {{ gateway|capfirst }} — Demo{% endblock %}
+
+{% block topbar_extra %}
+<a class="back" href="{% url 'payments:payments-home' %}">&larr; Home</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:480px; margin:0 auto; text-align:center;">
+    <div class="card-title" style="justify-content:center; display:flex; align-items:center; gap:.5rem; border-bottom:none;">
+        <span style="width:7px; height:7px; border-radius:50%; display:inline-block; background:{% if gateway == 'khalti' %}var(--khalti){% elif gateway == 'esewa' %}var(--esewa){% elif gateway == 'connectips' %}var(--connectips){% elif gateway == 'fonepay' %}var(--fonepay){% else %}var(--accent){% endif %};"></span>
+        {{ gateway|capfirst }}
+    </div>
+
+    <div class="redirect-glyph">&#8678;</div>
+
+    <h1 style="font-size:1.3rem; font-weight:650; letter-spacing:-.01em; margin-bottom:.4rem;">Redirecting to {{ gateway|capfirst }}</h1>
+
+    {% if simulated %}
+    <div class="fp-notice" style="text-align:left; margin-bottom:1rem;">
+        <div class="fp-notice-head">
+            <span class="fp-notice-tag">SIMULATED</span>
+            <span class="fp-notice-title">No ConnectIPS credentials configured</span>
+        </div>
+        <ul class="fp-notice-list">
+            <li>This form is a demo stand-in (a real ConnectIPS login would need an RSA certificate and merchant credentials).</li>
+            <li>Continue to step through the mocked ConnectIPS flow: login &rarr; select bank &rarr; confirm with Transaction Password/OTP.</li>
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if simulated %}
+    <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.5rem;">
+        Continue to the simulated ConnectIPS login.
+    </p>
+    {% else %}
+    <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.5rem;">
+        If you are not redirected automatically, click the button below.
+    </p>
+    {% endif %}
+
+    <form id="gateway-form" method="POST" action="{{ target_url }}">
+        {% for name, value in form_fields.items %}
+        <input type="hidden" name="{{ name }}" value="{{ value }}">
+        {% endfor %}
+        <button class="btn btn-{{ gateway }}" type="submit">Continue to {{ gateway|capfirst }}</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .redirect-glyph {
+        font-size: 2rem; color: var(--muted-2);
+        margin: .5rem 0 1.25rem;
+        animation: redirect-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes redirect-pulse {
+        0%, 100% { opacity: .45; transform: translateX(0); }
+        50% { opacity: 1; transform: translateX(-4px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .redirect-glyph { animation: none; opacity: .8; }
+    }
+</style>
+<script>
+    window.addEventListener('DOMContentLoaded', function () {
+        {% if not simulated %}
+        document.getElementById('gateway-form').submit();
+        {% endif %}
+    });
+</script>
+{% endblock %}
