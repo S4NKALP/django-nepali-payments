@@ -1,5 +1,27 @@
 # django-nepali-payment
 
+<p align="center">
+  <a href="https://github.com/S4NKALP/django-nepali-payments/actions/workflows/ci.yml">
+    <img src="https://github.com/S4NKALP/django-nepali-payments/actions/workflows/ci.yml/badge.svg" alt="CI">
+  </a>
+  <a href="https://pypi.org/project/django-nepali-payment/">
+    <img src="https://img.shields.io/pypi/v/django-nepali-payment" alt="PyPI version">
+  </a>
+  <a href="https://pypi.org/project/django-nepali-payment/">
+    <img src="https://img.shields.io/pypi/pyversions/django-nepali-payment" alt="Python versions">
+  </a>
+  <img src="https://img.shields.io/badge/Django-4.2%20%7C%205.0-092E20" alt="Django">
+  <a href="https://pypi.org/project/django-nepali-payment/">
+    <img src="https://img.shields.io/pypi/dm/django-nepali-payment" alt="PyPI downloads">
+  </a>
+  <a href="https://github.com/S4NKALP/django-nepali-payments/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/S4NKALP/django-nepali-payments" alt="License">
+  </a>
+  <a href="https://github.com/S4NKALP/django-nepali-payments">
+    <img src="https://img.shields.io/github/last-commit/S4NKALP/django-nepali-payments" alt="Last commit">
+  </a>
+</p>
+
 Accept payments in Nepal from your Django app with a single, consistent API.
 
 We handle **Khalti**, **eSewa**, **Fonepay** (Dynamic QR, Static QR, status
@@ -20,22 +42,6 @@ uv add django-nepali-payment
 **Requirements:** Python 3.11+, Django 4.2+ (the library itself is not tied to a
 specific Django major). It bundles `requests` for transport and `cryptography`
 for ConnectIPS RSA signing.
-
-### Contents
-
-- [What you get](#what-you-get)
-- [How it's built](#how-its-built)
-- [Quick start](#quick-start) · [Tune the HTTP client](#tuning-the-http-client)
-- [Initiate a payment](#initiate-a-payment) — eSewa, Khalti, Fonepay
-- [Fonepay Static QR](#fonepay-static-qr)
-- [ConnectIPS](#connectips)
-- [Verify a payment](#verify-a-payment)
-- [Errors](#errors) · [Handling callbacks safely](#handling-callbacks-safely)
-- [Fonepay QR status monitoring](#fonepay-qr-status-monitoring)
-- [Why polling](#why-polling-instead-of-websockets)
-- [See it in action](#see-it-in-action) · [Development](#development) · [CI](#ci)
-
----
 
 ## What you get
 
