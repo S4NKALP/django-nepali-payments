@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}New {{ gateway|capfirst }} payment — Demo{% endblock %}
+
+{% block topbar_extra %}
+<a class="back" href="{% url 'payments:payments-home' %}">&larr; Home</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:520px; margin:0 auto;">
+    <div class="card-title" style="display:flex; align-items:center; gap:.5rem;">
+        <span style="width:7px; height:7px; border-radius:50%; display:inline-block; background:{% if gateway == 'khalti' %}var(--khalti){% elif gateway == 'esewa' %}var(--esewa){% elif gateway == 'connectips' %}var(--connectips){% elif gateway == 'fonepay' %}var(--fonepay){% else %}var(--accent){% endif %};"></span>
+        New {{ gateway|capfirst }} payment
+    </div>
+    <p style="color:var(--muted); font-size:.85rem; margin-bottom:1.25rem;">
+        Amounts are in NPR.
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div style="margin-bottom:1rem;">
+            <label class="form-label" for="amount">Amount (NPR)</label>
+            <input class="form-control" type="text" id="amount" name="amount" value="10.00">
+        </div>
+        <div style="margin-bottom:1.25rem;">
+            <label class="form-label" for="description">Description</label>
+            <input class="form-control" type="text" id="description" name="description" value="Coffee mug">
+        </div>
+        <button class="btn btn-{{ gateway }}" type="submit">Pay with {{ gateway|capfirst }}</button>
+    </form>
+</div>
+{% endblock %}
