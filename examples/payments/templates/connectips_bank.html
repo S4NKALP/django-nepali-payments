@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}connectIPS — Select Bank Account{% endblock %}
+{% block topbar_extra %}
+<a class="back" href="{% url 'payments:payments-home' %}">&larr; Cancel &amp; go home</a>
+{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:440px; margin:0 auto;">
+    <div class="card-title" style="display:flex; align-items:center; gap:.5rem; border-bottom:none;">
+        <img src="https://nchl.com.np/wp-content/uploads/2023/11/NCHL-Logo.png" alt="NCHL" style="height:30px; width:auto;">
+        <span style="font-weight:700; letter-spacing:.02em;">connect<span style="color:var(--connectips);">IPS</span></span>
+        <span style="font-size:.78rem; color:var(--muted); margin-left:auto;">STEP 2 of 3 &mdash; Bank Account</span>
+    </div>
+
+    <div style="border:1px solid var(--border); border-radius:var(--radius); padding:.8rem 1rem; margin-bottom:1rem; font-size:.85rem;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:.35rem;"><span style="color:var(--muted);">Merchant</span><span style="font-weight:600;">{{ merchant }}</span></div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:.35rem;"><span style="color:var(--muted);">Order / TXNID</span><code>{{ order_id }}</code></div>
+        <div style="display:flex; justify-content:space-between;"><span style="color:var(--muted);">Amount</span><span style="font-weight:600;">NPR {{ amount }}</span></div>
+    </div>
+
+    {% if error %}
+    <div style="background:var(--warning-soft); border:1px solid var(--warning); color:var(--warning); border-radius:var(--radius); padding:.6rem .8rem; font-size:.82rem; margin-bottom:1rem;">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="{% url 'payments:payments-connectips-payment' %}">
+        <input type="hidden" name="ci_step" value="bank">
+        <label class="form-label" for="ci-bank">Select the bank account to pay from</label>
+        <select class="form-control" id="ci-bank" name="ci_bank">
+            {% for b in banks %}
+            <option value="{{ b }}"{% if not bank and forloop.first %} selected{% elif bank == b %} selected{% endif %}>{{ b }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-connectips" type="submit" style="width:100%; margin-top:1.1rem;">Continue</button>
+    </form>
+
+    <form method="post" action="{% url 'payments:payments-failure' 'connectips' %}" style="margin-top:.6rem;">
+        <input type="hidden" name="SIMULATED" value="True">
+        <button class="btn btn-ghost btn-sm" type="submit" style="width:100%;">Cancel payment</button>
+    </form>
+</div>
+{% endblock %}
