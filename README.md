@@ -1,5 +1,7 @@
 # django-nepali-payment
 
+<p align="center"><i>Nepal payments, one API. Khalti, eSewa, Fonepay, ConnectIPS.</i></p>
+
 <p align="center">
   <a href="https://github.com/S4NKALP/django-nepali-payments/actions/workflows/ci.yml">
     <img src="https://github.com/S4NKALP/django-nepali-payments/actions/workflows/ci.yml/badge.svg" alt="CI">
@@ -327,7 +329,7 @@ comes back as a `PaymentResult`; if it's a bug in your call, it raises.
 
 - **Verify server-side, don't trust the query string.** The `pidx` (Khalti) or
   `data` (eSewa) is only an identifier; always round-trip through
-  `manager.verify_payment`. For ConnectIPS, pass the params *and* the expected
+  `manager.verify_payment`. For ConnectIPS, pass the params _and_ the expected
   amount.
 - **Reconcile the amount** against your order before marking paid: Khalti/eSewa
   report it in `result.data.total_amount`, ConnectIPS in
@@ -423,13 +425,11 @@ uv run pytest                                 # tests (~97% coverage with --cov)
 NEPALI_PAYMENT_ESEWA_SECRET=... ... uv run pytest tests/test_live_api.py -v
 ```
 
-## CI
+## Contributing
 
-Workflows in `.github/workflows/`:
+Contributions are welcome. Open an issue or submit a PR.
 
-- **`ci.yml`**: lint, format, Python × Django test matrix (80% coverage gate),
-  package build, on push/PR.
-- **`live-api.yml`**: real sandbox smoke tests; manual or scheduled; skipped
-  unless provider secrets are set.
-- **`release.yml`**: builds and publishes to PyPI on `django-nepali-payment/v*`
-  tags.
+1. Fork the repo
+2. Create a feature branch (`git checkout -b my-branch`)
+3. Make your changes
+4. Submit a pull request
