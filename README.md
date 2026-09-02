@@ -42,6 +42,8 @@ pip install django-nepali-payment
 
 ## Highlights
 
+<p align="center"><i>Why you'll love it.</i></p>
+
 - **One shape for every gateway**: every call returns a `PaymentResult`.
 - **Signatures that just work**: reproduced from each provider's reference:
   - eSewa: HMAC-SHA256 (base64)
@@ -57,6 +59,8 @@ pip install django-nepali-payment
 
 ## Architecture
 
+<p align="center"><i>Simple by design. Three layers, total.</i></p>
+
 Three small layers, all usable directly:
 
 - **`PaymentManager`**: the entry point. Pick gateway, mode, secret once; call
@@ -68,6 +72,8 @@ Three small layers, all usable directly:
   requests are `dataclass(slots=True)` and self-serialize.
 
 ## Quick start
+
+<p align="center"><i>Your first payment in seconds.</i></p>
 
 ```python
 from nepali_payment import PaymentManager, PaymentMethod, PaymentMode, PaymentResult
@@ -121,6 +127,8 @@ connections on shutdown.
 > Enable only for endpoints safe to repeat.
 
 ## Initiate a payment
+
+<p align="center"><i>Same call, every gateway.</i></p>
 
 ```python
 manager.initiate_payment(PaymentResult, request)
@@ -183,6 +191,8 @@ The dynamic QR bakes the amount in; settlement is async, so pair it with the
 
 ## Fonepay Static QR
 
+<p align="center"><i>Set it once, scan forever.</i></p>
+
 One fixed merchant QR; the customer types the amount at scan. Fetch once per
 station:
 
@@ -203,6 +213,8 @@ if result.success:
 > `FonepayPaymentMonitor` with the payment's PRN.
 
 ## ConnectIPS
+
+<p align="center"><i>Bank-grade signing, dead-simple form.</i></p>
 
 A **form POST** gateway signed with **SHA256withRSA** using a merchant
 certificate (`.pfx`, `.p12` or `.pem`). Instead of a secret key it takes a
@@ -267,6 +279,8 @@ if result.success:
 
 ## Verify a payment
 
+<p align="center"><i>One call to confirm it's real.</i></p>
+
 Same call everywhere, only the argument differs:
 
 ```python
@@ -288,6 +302,8 @@ result = manager.verify_payment(PaymentResult, base64_response)
 ```
 
 ## Errors
+
+<p align="center"><i>Failures are data. Bugs are loud.</i></p>
 
 Two kinds, kept separate:
 
@@ -327,6 +343,8 @@ comes back as a `PaymentResult`; if it's a bug in your call, it raises.
 
 ## Handling callbacks safely
 
+<p align="center"><i>Never trust the query string. Always verify.</i></p>
+
 - **Verify server-side, don't trust the query string.** The `pidx` (Khalti) or
   `data` (eSewa) is only an identifier; always round-trip through
   `manager.verify_payment`. For ConnectIPS, pass the params _and_ the expected
@@ -341,6 +359,8 @@ comes back as a `PaymentResult`; if it's a bug in your call, it raises.
   still bind the order to the request/session before releasing goods.
 
 ## Fonepay QR status monitoring
+
+<p align="center"><i>Know the moment it settles.</i></p>
 
 Settlement is async, so poll for it with plain **HTTP polling**, shared-hosting
 safe:
@@ -391,11 +411,15 @@ monitor.dispose()                   # stop all, release session
 
 ### Why polling, not WebSockets?
 
+<i>Shared hosting said no. We said fine.</i>
+
 Shared hosting forbids persistent connections, daemons and async loops. The
 monitoring thread needs none of these; it is plain HTTPS on the shared
 `requests.Session`. Dependency-light, synchronous, deploys cleanly.
 
 ## See it in action
+
+<p align="center"><i>Wired up, ready to run.</i></p>
 
 A runnable Django app in [`examples/`](examples/) wires every gateway into real
 views, an `Order` model, provider callbacks and a Fonepay background monitor:
@@ -415,6 +439,8 @@ Defaults to sandbox; credentials come from env vars. See
 
 ## Development
 
+<p align="center"><i>One command to get going.</i></p>
+
 Tooling via [uv](https://docs.astral.sh/uv/):
 
 ```bash
@@ -426,6 +452,8 @@ NEPALI_PAYMENT_ESEWA_SECRET=... ... uv run pytest tests/test_live_api.py -v
 ```
 
 ## Contributing
+
+<p align="center"><i>PRs welcome, big or small.</i></p>
 
 Contributions are welcome. Open an issue or submit a PR.
 
