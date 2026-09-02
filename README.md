@@ -10,7 +10,7 @@
   <a href="https://pypi.org/project/django-nepali-payment/">
     <img src="https://img.shields.io/pypi/pyversions/django-nepali-payment" alt="Python versions">
   </a>
-  <img src="https://img.shields.io/badge/Django-4.2%20%7C%205.0-092E20" alt="Django">
+  <img src="https://img.shields.io/badge/Django-4.2%20%7C%205.0%20%7C%206.0%20%7C%206.1-092E20" alt="Django">
   <a href="https://pypi.org/project/django-nepali-payment/">
     <img src="https://img.shields.io/pypi/dm/django-nepali-payment" alt="PyPI downloads">
   </a>
