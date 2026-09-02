@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}connectIPS — Processing{% endblock %}
+
+{% block content %}
+<div class="card" style="max-width:440px; margin:0 auto; text-align:center;">
+    <div class="card-title" style="justify-content:center; display:flex; align-items:center; gap:.5rem; border-bottom:none;">
+        <span style="font-weight:700; letter-spacing:.02em;">connect<span style="color:var(--connectips);">IPS</span></span>
+    </div>
+
+    <div class="redirect-glyph" style="font-size:2.2rem; margin:1rem 0;">&#8635;</div>
+
+    <h1 style="font-size:1.25rem; font-weight:650; letter-spacing:-.01em; margin-bottom:.4rem;">Processing your transaction</h1>
+    <p style="color:var(--muted); font-size:.9rem; margin-bottom:1.4rem;">
+        Order <code>{{ order_id }}</code> is being processed. Reporting the result back to the merchant...
+    </p>
+
+    <form id="ci-finalize" method="post" action="{% url 'payments:payments-callback' 'connectips' %}">
+        <input type="hidden" name="TXNID" value="{{ order_id }}">
+        <input type="hidden" name="ReferenceID" value="{{ order_id }}">
+        <input type="hidden" name="SIMULATED" value="True">
+        <input type="hidden" name="STATUS" value="SUCCESS">
+        <noscript><button class="btn btn-connectips" type="submit">Continue</button></noscript>
+    </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<style>@media (prefers-reduced-motion: reduce){.redirect-glyph{animation:none;opacity:.8}}</style>
+<script>
+    window.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('ci-finalize').submit();
+    });
+</script>
+{% endblock %}
