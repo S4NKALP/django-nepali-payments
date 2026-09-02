@@ -22,13 +22,13 @@
   </a>
 </p>
 
-Accept Nepal payments from Django with **one consistent API** — Khalti, eSewa,
+Accept Nepal payments from Django with **one consistent API** for Khalti, eSewa,
 Fonepay (Dynamic QR, Static QR, status, tax refund) and ConnectIPS. No four
 HTTP APIs, no four signing schemes, no four callback formats. One
 `PaymentManager`, one `PaymentResult`.
 
 Lightweight: plain HTTPS through a pooled `requests.Session`. No WebSockets, no
-async loops, no daemons — runs on shared hosting.
+async loops, no daemons, and runs on shared hosting.
 
 ```bash
 pip install django-nepali-payment
@@ -38,38 +38,32 @@ pip install django-nepali-payment
 **Requirements:** Python 3.11+, Django 4.2+, `requests`, `cryptography`
 (for ConnectIPS signing).
 
----
-
 ## Highlights
 
-- **One shape for every gateway** — every call returns a `PaymentResult`.
-- **Signatures that just work** — reproduced from each provider's reference:
-  - eSewa — HMAC-SHA256 (base64)
-  - Fonepay — HMAC-SHA512 (lowercase hex)
-  - Khalti — `Authorization: key <secret>` header
-  - ConnectIPS — SHA256withRSA over your merchant certificate
-- **Sandbox ↔ production in one flag** — flip `PaymentMode`.
-- **Shared-hosting-safe polling** — Fonepay settlement checked with a lightweight
+- **One shape for every gateway**: every call returns a `PaymentResult`.
+- **Signatures that just work**: reproduced from each provider's reference:
+  - eSewa: HMAC-SHA256 (base64)
+  - Fonepay: HMAC-SHA512 (lowercase hex)
+  - Khalti: `Authorization: key <secret>` header
+  - ConnectIPS: SHA256withRSA over your merchant certificate
+- **Sandbox ↔ production in one flag**: flip `PaymentMode`.
+- **Shared-hosting-safe polling**: Fonepay settlement checked with a lightweight
   polling thread, not a WebSocket.
-- **Fonepay extras built in** — tax refunds and Static QR.
-- **Connection reuse** — one shared `requests.Session`, sensible timeouts.
-- **Optional retries** — exponential backoff on transient failures; opt in.
-
----
+- **Fonepay extras built in**: tax refunds and Static QR.
+- **Connection reuse**: one shared `requests.Session`, sensible timeouts.
+- **Optional retries**: exponential backoff on transient failures; opt in.
 
 ## Architecture
 
 Three small layers, all usable directly:
 
-- **`PaymentManager`** — the entry point. Pick gateway, mode, secret once; call
+- **`PaymentManager`**: the entry point. Pick gateway, mode, secret once; call
   `initiate_payment` / `verify_payment` (plus Fonepay refund / static QR).
-- **Gateway services** — one per provider, extending `BasePaymentService`
+- **Gateway services**: one per provider, extending `BasePaymentService`
   (shared HTTP client, sandbox/prod URL, error handling). Each implements only
   its own initiate/verify logic and signing.
-- **Models** — `PaymentResult` is the universal answer type; per-gateway typed
+- **Models**: `PaymentResult` is the universal answer type; per-gateway typed
   requests are `dataclass(slots=True)` and self-serialize.
-
----
 
 ## Quick start
 
@@ -121,10 +115,8 @@ manager = PaymentManager(
 Call `api.close()` (or `manager._api_service().close()`) to release pooled
 connections on shutdown.
 
-> Retries default **off** — re-sending a payment initiation could double-charge.
+> Retries default **off**: re-sending a payment initiation could double-charge.
 > Enable only for endpoints safe to repeat.
-
----
 
 ## Initiate a payment
 
@@ -184,10 +176,8 @@ if result.success:
     qr_data = result.data.qr_message   # show to the customer
 ```
 
-Dynamic QR bakes the amount in. Settlement is async — pair with the
+The dynamic QR bakes the amount in; settlement is async, so pair it with the
 [status monitor](#fonepay-qr-status-monitoring).
-
----
 
 ## Fonepay Static QR
 
@@ -209,8 +199,6 @@ if result.success:
 > `process_static_qr` is Fonepay-only (like the tax refund). On other gateways
 > it raises `ValidationError`. For settlement, use `verify_payment` or the
 > `FonepayPaymentMonitor` with the payment's PRN.
-
----
 
 ## ConnectIPS
 
@@ -275,11 +263,9 @@ if result.success:
 > `cryptography` installs automatically. The cert is loaded inside the service
 > and never logged.
 
----
-
 ## Verify a payment
 
-Same call everywhere — only the argument differs:
+Same call everywhere, only the argument differs:
 
 ```python
 # Khalti: pass the pidx
@@ -299,13 +285,11 @@ result = manager.verify_payment(PaymentResult, payload)
 result = manager.verify_payment(PaymentResult, base64_response)
 ```
 
----
-
 ## Errors
 
 Two kinds, kept separate:
 
-**1. Gateway failures return a failed `PaymentResult`** — no exception, so
+**1. Gateway failures return a failed `PaymentResult`**: no exception, so
 rejections, non-2xx responses and network hiccups are data:
 
 ```python
@@ -327,7 +311,7 @@ result = manager.initiate_payment(PaymentResult, request).raise_for_status()
 > failed result, matching eSewa's own API. Catch it when working with eSewa.
 
 **2. Developer mistakes raise typed exceptions.** An empty secret, an
-unsupported gateway, a `None`/empty/invalid request — these fail loudly:
+unsupported gateway, a `None`/empty/invalid request, these fail loudly:
 
 ```python
 from nepali_payment.exceptions import (
@@ -339,15 +323,13 @@ from nepali_payment.exceptions import (
 Rule of thumb: if a real payment could fail and you should check `success`, it
 comes back as a `PaymentResult`; if it's a bug in your call, it raises.
 
----
-
 ## Handling callbacks safely
 
 - **Verify server-side, don't trust the query string.** The `pidx` (Khalti) or
-  `data` (eSewa) is only an identifier — always round-trip through
+  `data` (eSewa) is only an identifier; always round-trip through
   `manager.verify_payment`. For ConnectIPS, pass the params *and* the expected
   amount.
-- **Reconcile the amount** against your order before marking paid — Khalti/eSewa
+- **Reconcile the amount** against your order before marking paid: Khalti/eSewa
   report it in `result.data.total_amount`, ConnectIPS in
   `result.data.txn_amount`. The `examples/` app stores a wrong-amount settlement
   as `failed`, never `paid`.
@@ -356,11 +338,9 @@ comes back as a `PaymentResult`; if it's a bug in your call, it raises.
 - **Check the order belongs to your user.** If callbacks are `@csrf_exempt`,
   still bind the order to the request/session before releasing goods.
 
----
-
 ## Fonepay QR status monitoring
 
-Settlement is async, so poll for it — plain **HTTP polling**, shared-hosting
+Settlement is async, so poll for it with plain **HTTP polling**, shared-hosting
 safe:
 
 ```python
@@ -410,10 +390,8 @@ monitor.dispose()                   # stop all, release session
 ### Why polling, not WebSockets?
 
 Shared hosting forbids persistent connections, daemons and async loops. The
-monitoring thread needs none of these — plain HTTPS on the shared
+monitoring thread needs none of these; it is plain HTTPS on the shared
 `requests.Session`. Dependency-light, synchronous, deploys cleanly.
-
----
 
 ## See it in action
 
@@ -433,8 +411,6 @@ uv run python manage.py monitor_fonepay  # poll settlements in a worker
 Defaults to sandbox; credentials come from env vars. See
 [`examples/README.md`](examples/README.md) for the full walkthrough.
 
----
-
 ## Development
 
 Tooling via [uv](https://docs.astral.sh/uv/):
@@ -451,9 +427,9 @@ NEPALI_PAYMENT_ESEWA_SECRET=... ... uv run pytest tests/test_live_api.py -v
 
 Workflows in `.github/workflows/`:
 
-- **`ci.yml`** — lint, format, Python × Django test matrix (80% coverage gate),
+- **`ci.yml`**: lint, format, Python × Django test matrix (80% coverage gate),
   package build, on push/PR.
-- **`live-api.yml`** — real sandbox smoke tests; manual or scheduled; skipped
+- **`live-api.yml`**: real sandbox smoke tests; manual or scheduled; skipped
   unless provider secrets are set.
-- **`release.yml`** — builds and publishes to PyPI on `django-nepali-payment/v*`
+- **`release.yml`**: builds and publishes to PyPI on `django-nepali-payment/v*`
   tags.
