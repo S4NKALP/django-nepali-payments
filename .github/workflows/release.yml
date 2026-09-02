@@ -1,22 +1,17 @@
 name: Release to PyPI
 
 on:
-  push:
-    tags:
-      - "django-nepali-payment/v*"
-  workflow_dispatch:
-
-permissions:
-  id-token: write
-  contents: read
-
-jobs:
   release:
+    types: [published]
+  permissions:
+    contents: read
+jobs:
+  deploy:
     name: Build and publish to PyPI
     runs-on: ubuntu-latest
     environment: release
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
