@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ gateway|capfirst }} payment {% if success %}verified{% else %}not verified{% endif %} — Demo{% endblock %}
+
+{% block topbar_extra %}
+<a class="back" href="{% url 'payments:payments-home' %}">&larr; Home</a>
+{% endblock %}
+
+{% block content %}
+<div class="card result-card">
+    <div class="qr-kind" style="display:flex; justify-content:center; align-items:center; gap:.45rem;">
+        <span style="width:6px; height:6px; border-radius:50%; display:inline-block; background:{% if gateway == 'khalti' %}var(--khalti){% elif gateway == 'esewa' %}var(--esewa){% elif gateway == 'connectips' %}var(--connectips){% elif gateway == 'fonepay' %}var(--fonepay){% else %}var(--accent){% endif %};"></span>
+        {{ gateway|capfirst }}
+    </div>
+
+    <div class="result-icon {% if success %}ok{% else %}bad{% endif %}">
+        {% if success %}&#10003;{% else %}&#10007;{% endif %}
+    </div>
+
+    <h1 style="font-size:1.3rem; font-weight:650; letter-spacing:-.01em; margin-bottom:.5rem;">
+        {{ gateway|capfirst }} payment
+        {% if success %}verified{% else %}not verified{% endif %}
+    </h1>
+
+    {% if order %}
+    <p style="color: var(--muted); font-size:.9rem;">
+        Order <code>{{ order.order_id }}</code> is
+        <span class="badge badge-{{ order.status }}">{{ order.status }}</span>
+    </p>
+    {% endif %}
+
+    {% if payload %}
+    <details>
+        <summary style="cursor:pointer; font-size:.85rem; color:var(--muted); margin-top:1rem;">Provider payload</summary>
+        <pre>{{ payload }}</pre>
+    </details>
+    {% endif %}
+
+    <div style="margin-top:1.5rem;">
+        <a class="btn btn-primary" href="{% url 'payments:payments-home' %}">Back to home</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if show_toast %}
+<script>
+    window.addEventListener('DOMContentLoaded', function () {
+        var success = {{ success|yesno:'true,false' }};
+        window.showToast(
+            success ? 'success' : 'error',
+            success ? 'Payment verified' : 'Payment not verified',
+            '{{ gateway|capfirst }} returned a result.'
+        );
+    });
+</script>
+{% endif %}
+{% endblock %}
