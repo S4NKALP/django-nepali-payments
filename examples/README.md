@@ -5,14 +5,14 @@ gateway in `django-nepali-payment` the way you would in a real project, through
 views, models, URL callbacks and a management command, rather than as
 standalone scripts.
 
-| Component                                         | Purpose                                                                                                           |
-| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `manage.py` / `example_project/`                  | A minimal Django project (settings, urls, wsgi/asgi).                                                             |
-| `payments/models.py`                              | An `Order` model storing the payment lifecycle (status, provider ref, raw payload).                               |
-| `payments/views.py`                      | `create_order` (initiate), `callback` (provider return), `verify_order` (re-check) for Khalti, eSewa, Fonepay and ConnectIPS. |
-| `payments/urls.py`                       | Routed pages for creating payments and receiving provider callbacks.                                                          |
-| `payments/management/commands/monitor_fonepay.py` | Background worker that polls Fonepay for settlements (shared-hosting safe).                                        |
-| `.env.sample`                            | Credential template, copy to `.env` and fill in your keys.                                                                    |
+| Component                                         | Purpose                                                                                                                       |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `manage.py` / `example_project/`                  | A minimal Django project (settings, urls, wsgi/asgi).                                                                         |
+| `payments/models.py`                              | An `Order` model storing the payment lifecycle (status, provider ref, raw payload).                                           |
+| `payments/views.py`                               | `create_order` (initiate), `callback` (provider return), `verify_order` (re-check) for Khalti, eSewa, Fonepay and ConnectIPS. |
+| `payments/urls.py`                                | Routed pages for creating payments and receiving provider callbacks.                                                          |
+| `payments/management/commands/monitor_fonepay.py` | Background worker that polls Fonepay for settlements (shared-hosting safe).                                                   |
+| `.env.sample`                                     | Credential template, copy to `.env` and fill in your keys.                                                                    |
 
 ## Run it
 
@@ -120,11 +120,11 @@ you can explore the UI and the request/response shapes safely. ConnectIPS runs a
 
 The default `.env.sample` ships with test keys that are actually accepted today:
 
-| Gateway  | Test credentials                                                            |
-| -------- | --------------------------------------------------------------------------- |
-| Khalti   | Mobile `9800000001/2/3/4/5`, Pin `1111`, OTP `987654`, secret `live_secret_key_68791341fdd94846a146f0457ff7b455` |
-| eSewa    | Username `9806800001/2/3/4/5`, Password `Nepal@123`, Token `123456`, secret `8gBm/:&EnhH.1/q`, product code `EPAYTEST` |
-| Fonepay  | See note below — no public sandbox credentials exist                       |
+| Gateway | Test credentials                                                                                                     |
+| ------- | -------------------------------------------------------------------------------------------------------------------- |
+| Khalti  | Mobile `9800000001/2/3/4/5`, Pin `1111`, OTP `987654`, secret `live_secret_key_68791341fdd94846a146f0457ff7b455`     |
+| eSewa   | Username `9711111111/2/3/4`, Password `Nepal@123`, Token `123456`, secret `8gBm/:&EnhH.1/q`, product code `EPAYTEST` |
+| Fonepay | See note below — no public sandbox credentials exist                                                                 |
 
 ### Fonepay sandbox caveat
 
