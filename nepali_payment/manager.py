@@ -1,4 +1,5 @@
 from typing import Any, TypeVar
+import threading
 
 from nepali_payment.enums import PaymentMethod, PaymentMode
 from nepali_payment.exceptions import ValidationError
@@ -45,6 +46,7 @@ class PaymentManager:
         self._api = api
         self._config = config
         self._service_cache = None
+        self._lock = threading.Lock()
 
     def _api_service(self):
         """Return the shared HTTP client, creating it on the first call.
@@ -66,9 +68,11 @@ class PaymentManager:
         keeps a stable HTTP client across operations.
         """
         if self._service_cache is None:
-            self._service_cache = get_payment_service(
-                self._method, self._secret_key, self._mode, api=self._api_service(), config=self._config
-            )
+            with self._lock:
+                if self._service_cache is None:
+                    self._service_cache = get_payment_service(
+                        self._method, self._secret_key, self._mode, api=self._api_service(), config=self._config
+                    )
         return self._service_cache
 
     def initiate_payment(self, result_cls: type[T], content: Any) -> T:
