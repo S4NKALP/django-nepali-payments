@@ -182,6 +182,10 @@ def _coerce(cls: type[T], data: Any) -> T:
 def decode_base64_content(encoded_content: str) -> str:
     """Decode base64 content, falling back to the raw string (DecodeBase64Content)."""
     try:
-        return base64.b64decode(encoded_content).decode("utf-8")
-    except (ValueError, TypeError):
+        # Try standard base64 first, then urlsafe
+        try:
+            return base64.b64decode(encoded_content, validate=False).decode("utf-8")
+        except Exception:
+            return base64.urlsafe_b64decode(encoded_content + "=" * (-len(encoded_content) % 4)).decode("utf-8")
+    except (ValueError, TypeError, Exception):
         return encoded_content
